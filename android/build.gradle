@@ -4,18 +4,17 @@ version '1.0'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral() // Replaced jcenter() with mavenCentral()
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:7.3.1' // Updated Gradle plugin
     }
 }
 
-rootProject.allprojects {
+allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral() // Replaced jcenter() with mavenCentral()
     }
 }
 
@@ -23,30 +22,42 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 34
+    buildToolsVersion "34.0.0"
 
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 34
     }
+
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     namespace 'com.twilio.twilio_voice'
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
-    implementation 'com.twilio:voice-android:5.8.0'
+    implementation platform('com.google.firebase:firebase-bom:33.2.0') // Updated to latest BOM
     implementation 'com.google.firebase:firebase-messaging'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'com.twilio:voice-android:6.1.1' // Updated to latest version
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.8.4' // Replaced deprecated lifecycle-extensions
+    implementation 'androidx.lifecycle:lifecycle-common:2.8.4' // Replaced deprecated lifecycle-extensions
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4' // Updated to latest
+    implementation 'androidx.core:core:1.6.0' // Explicitly use 1.6.0 to avoid lStar
 
+    // Force AndroidX core to avoid lStar attribute
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.core:core:1.6.0'
+            force 'androidx.core:core-ktx:1.6.0'
+        }
+    }
 }
-
